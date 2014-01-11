@@ -15,6 +15,10 @@
 #include <Fission/Network/IntentSystem.h>
 #include <Fission/Network/Intent.h>
 
+#include "Velocity.h"
+
+#include "MovementSystem.h"
+
 int main()
 {
     // Initialize the resource manager.
@@ -23,6 +27,7 @@ int main()
     // Register the components with the component type manager
     fsn::ComponentTypeManager::add<fsn::Transform>();
     fsn::ComponentTypeManager::add<fsn::Intent>();
+    fsn::ComponentTypeManager::add<Velocity>();
 
     // Setup the engine, render manager, and fake connection.
     auto engine = new fsn::Engine;
@@ -32,9 +37,11 @@ int main()
     // Setup our systems - only the input systems for now
     auto inputSys = new fsn::InputSystem(engine->getEventManager(), 1.f/60.f, &renderMgr->getWindow());
     auto intentSys = new fsn::IntentSystem(engine->getEventManager(), 1.f/60.f, conn);
+    auto moveSys = new MovementSystem(engine->getEventManager(), 1.f/60.f);
 
     engine->addSystem(inputSys);
     engine->addSystem(intentSys);
+    engine->addSystem(moveSys);
 
     // Run the main loop.
     sf::Clock clock;

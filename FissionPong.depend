@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1389145886 source:c:\users\teddy\programming\fissionpong\main.cpp
+1389412613 source:c:\users\teddy\programming\fissionpong\main.cpp
 	<SFML/Window/Event.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<Fission/Core/Engine.h>
@@ -12,6 +12,8 @@
 	<Fission/Network/Connection.h>
 	<Fission/Network/IntentSystem.h>
 	<Fission/Network/Intent.h>
+	"Velocity.h"
+	"MovementSystem.h"
 
 1375438922 c:\users\teddy\programming\fissionpong\extlibs\include\sfml\window\event.hpp
 	<SFML/Config.hpp>
@@ -432,4 +434,18 @@
 	<SFML/System/Thread.inl>
 
 1375438922 c:\users\teddy\programming\fissionpong\extlibs\include\sfml\system\thread.inl
+
+1389411915 source:c:\users\teddy\programming\fissionpong\src\velocity.cpp
+	"Velocity.h"
+
+1389411923 c:\users\teddy\programming\fissionpong\include\velocity.h
+	<Fission/Core/Component.h>
+
+1389412493 source:c:\users\teddy\programming\fissionpong\src\movementsystem.cpp
+	"MovementSystem.h"
+	<Fission/Rendering/Transform.h>
+	"Velocity.h"
+
+1389412635 c:\users\teddy\programming\fissionpong\include\movementsystem.h
+	<Fission/Core/System.h>
 
