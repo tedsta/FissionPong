@@ -33,6 +33,7 @@ int main()
     // Register the components with the component type manager
     fsn::ComponentTypeManager::add<fsn::Transform>();
     fsn::ComponentTypeManager::add<fsn::Intent>();
+    fsn::ComponentTypeManager::add<fsn::Sprite>();
     fsn::ComponentTypeManager::add<Dimensions>();
     fsn::ComponentTypeManager::add<Velocity>();
     fsn::ComponentTypeManager::add<Paddle>();
@@ -64,12 +65,12 @@ int main()
     paddle1->addComponent(new fsn::Sprite("paddle.png"));
     paddle1->addComponent(new Paddle);
 
-    auto paddle2 = entityMgr->getEntityRef(entityMgr->createEntity());
-    paddle1->addComponent(new fsn::Transform(sf::Vector2f(renderMgr->getWindow().getSize().x-16-5, 5)));
-    paddle1->addComponent(new Dimensions(16, 64));
-    paddle1->addComponent(new Velocity);
-    paddle1->addComponent(new fsn::Sprite("paddle.png"));
-    paddle1->addComponent(new Paddle);
+    /*auto paddle2 = entityMgr->getEntityRef(entityMgr->createEntity());
+    paddle2->addComponent(new fsn::Transform(sf::Vector2f(renderMgr->getWindow().getSize().x-16-5, 5)));
+    paddle2->addComponent(new Dimensions(16, 64));
+    paddle2->addComponent(new Velocity);
+    paddle2->addComponent(new fsn::Sprite("paddle.png"));
+    paddle2->addComponent(new Paddle);*/
 
     // Run the main loop.
     sf::Clock clock;
