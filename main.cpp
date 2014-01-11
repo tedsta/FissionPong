@@ -24,6 +24,7 @@
 #include "Score.h"
 
 #include "MovementSystem.h"
+#include "PlayerControlSystem.h"
 
 int main()
 {
@@ -49,11 +50,13 @@ int main()
     auto spriteSys = new fsn::SpriteRenderSystem(engine->getEventManager(), renderMgr, 1.f/60.f);
     auto inputSys = new fsn::InputSystem(engine->getEventManager(), 1.f/60.f, &renderMgr->getWindow());
     auto intentSys = new fsn::IntentSystem(engine->getEventManager(), 1.f/60.f, conn);
+    auto playerSys = new PlayerControlSystem(engine->getEventManager(), 1.f/60.f);
     auto moveSys = new MovementSystem(engine->getEventManager(), 1.f/60.f);
 
     engine->addSystem(spriteSys);
     engine->addSystem(inputSys);
     engine->addSystem(intentSys);
+    engine->addSystem(playerSys);
     engine->addSystem(moveSys);
 
     auto entityMgr = engine->getEntityManager();
@@ -64,6 +67,10 @@ int main()
     paddle1->addComponent(new Velocity);
     paddle1->addComponent(new fsn::Sprite("paddle.png"));
     paddle1->addComponent(new Paddle);
+    paddle1->addComponent(new fsn::Intent);
+
+    paddle1->getComponent<fsn::Intent>()->mapKeyToIntent("up", sf::Keyboard::W, fsn::Down);
+    paddle1->getComponent<fsn::Intent>()->mapKeyToIntent("down", sf::Keyboard::S, fsn::Down);
 
     /*auto paddle2 = entityMgr->getEntityRef(entityMgr->createEntity());
     paddle2->addComponent(new fsn::Transform(sf::Vector2f(renderMgr->getWindow().getSize().x-16-5, 5)));

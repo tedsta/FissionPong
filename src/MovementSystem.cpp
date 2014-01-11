@@ -17,21 +17,16 @@ MovementSystem::~MovementSystem()
 
 void MovementSystem::begin(const float dt)
 {
-    for (auto entity : getActiveEntities())
-        std::cout << entity->getID() << std::endl;
 }
 
 void MovementSystem::processEntity(fsn::EntityRef* entity, const float dt)
 {
-    //return;
-
     auto transform = entity->getComponent<fsn::Transform>();
     auto vel = entity->getComponent<Velocity>();
 
-    transform->move(vel->mX, vel->mY);
+    transform->move(static_cast<float>(vel->mX)*dt, static_cast<float>(vel->mY)*dt);
 }
 
 void MovementSystem::end(const float dt)
 {
-    std::cout << "done\n";
 }

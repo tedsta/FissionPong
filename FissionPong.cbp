@@ -57,6 +57,7 @@
 		<Unit filename="include/Dimensions.h" />
 		<Unit filename="include/MovementSystem.h" />
 		<Unit filename="include/Paddle.h" />
+		<Unit filename="include/PlayerControlSystem.h" />
 		<Unit filename="include/Score.h" />
 		<Unit filename="include/Velocity.h" />
 		<Unit filename="main.cpp" />
@@ -64,6 +65,7 @@
 		<Unit filename="src/Dimensions.cpp" />
 		<Unit filename="src/MovementSystem.cpp" />
 		<Unit filename="src/Paddle.cpp" />
+		<Unit filename="src/PlayerControlSystem.cpp" />
 		<Unit filename="src/Score.cpp" />
 		<Unit filename="src/Velocity.cpp" />
 		<Extensions>
