@@ -8,6 +8,8 @@
 
 #include <Fission/Rendering/RenderManager.h>
 #include <Fission/Rendering/Transform.h>
+#include <Fission/Rendering/Sprite.h>
+#include <Fission/Rendering/SpriteRenderSystem.h>
 
 #include <Fission/Input/InputSystem.h>
 
@@ -15,6 +17,7 @@
 #include <Fission/Network/IntentSystem.h>
 #include <Fission/Network/Intent.h>
 
+#include "Dimensions.h"
 #include "Velocity.h"
 #include "Paddle.h"
 #include "Ball.h"
@@ -30,6 +33,7 @@ int main()
     // Register the components with the component type manager
     fsn::ComponentTypeManager::add<fsn::Transform>();
     fsn::ComponentTypeManager::add<fsn::Intent>();
+    fsn::ComponentTypeManager::add<Dimensions>();
     fsn::ComponentTypeManager::add<Velocity>();
     fsn::ComponentTypeManager::add<Paddle>();
     fsn::ComponentTypeManager::add<Ball>();
@@ -41,13 +45,31 @@ int main()
     auto conn = new fsn::Connection(engine->getEventManager());
 
     // Setup our systems - only the input systems for now
+    auto spriteSys = new fsn::SpriteRenderSystem(engine->getEventManager(), renderMgr, 1.f/60.f);
     auto inputSys = new fsn::InputSystem(engine->getEventManager(), 1.f/60.f, &renderMgr->getWindow());
     auto intentSys = new fsn::IntentSystem(engine->getEventManager(), 1.f/60.f, conn);
     auto moveSys = new MovementSystem(engine->getEventManager(), 1.f/60.f);
 
+    engine->addSystem(spriteSys);
     engine->addSystem(inputSys);
     engine->addSystem(intentSys);
     engine->addSystem(moveSys);
+
+    auto entityMgr = engine->getEntityManager();
+
+    auto paddle1 = entityMgr->getEntityRef(entityMgr->createEntity());
+    paddle1->addComponent(new fsn::Transform(sf::Vector2f(5, 5)));
+    paddle1->addComponent(new Dimensions(16, 64));
+    paddle1->addComponent(new Velocity);
+    paddle1->addComponent(new fsn::Sprite("paddle.png"));
+    paddle1->addComponent(new Paddle);
+
+    auto paddle2 = entityMgr->getEntityRef(entityMgr->createEntity());
+    paddle1->addComponent(new fsn::Transform(sf::Vector2f(renderMgr->getWindow().getSize().x-16-5, 5)));
+    paddle1->addComponent(new Dimensions(16, 64));
+    paddle1->addComponent(new Velocity);
+    paddle1->addComponent(new fsn::Sprite("paddle.png"));
+    paddle1->addComponent(new Paddle);
 
     // Run the main loop.
     sf::Clock clock;
