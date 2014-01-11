@@ -72,12 +72,16 @@ int main()
     paddle1->getComponent<fsn::Intent>()->mapKeyToIntent("up", sf::Keyboard::W, fsn::Down);
     paddle1->getComponent<fsn::Intent>()->mapKeyToIntent("down", sf::Keyboard::S, fsn::Down);
 
-    /*auto paddle2 = entityMgr->getEntityRef(entityMgr->createEntity());
+    auto paddle2 = entityMgr->getEntityRef(entityMgr->createEntity());
     paddle2->addComponent(new fsn::Transform(sf::Vector2f(renderMgr->getWindow().getSize().x-16-5, 5)));
     paddle2->addComponent(new Dimensions(16, 64));
     paddle2->addComponent(new Velocity);
     paddle2->addComponent(new fsn::Sprite("paddle.png"));
-    paddle2->addComponent(new Paddle);*/
+    paddle2->addComponent(new Paddle);
+    paddle2->addComponent(new fsn::Intent);
+
+    paddle2->getComponent<fsn::Intent>()->mapKeyToIntent("up", sf::Keyboard::Up, fsn::Down);
+    paddle2->getComponent<fsn::Intent>()->mapKeyToIntent("down", sf::Keyboard::Down, fsn::Down);
 
     // Run the main loop.
     sf::Clock clock;
