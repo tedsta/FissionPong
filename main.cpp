@@ -16,6 +16,9 @@
 #include <Fission/Network/Intent.h>
 
 #include "Velocity.h"
+#include "Paddle.h"
+#include "Ball.h"
+#include "Score.h"
 
 #include "MovementSystem.h"
 
@@ -28,6 +31,9 @@ int main()
     fsn::ComponentTypeManager::add<fsn::Transform>();
     fsn::ComponentTypeManager::add<fsn::Intent>();
     fsn::ComponentTypeManager::add<Velocity>();
+    fsn::ComponentTypeManager::add<Paddle>();
+    fsn::ComponentTypeManager::add<Ball>();
+    fsn::ComponentTypeManager::add<Score>();
 
     // Setup the engine, render manager, and fake connection.
     auto engine = new fsn::Engine;
