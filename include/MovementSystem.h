@@ -7,7 +7,7 @@ class MovementSystem : public fsn::System
 {
     public:
         MovementSystem(fsn::IEventManager* eventManager, float lockStep);
-        ~MovementSystem();
+        virtual ~MovementSystem();
 
     protected:
         void begin(const float dt);
