@@ -1,12 +1,12 @@
 #include "PlayerControlSystem.h"
 
-#include <Fission/Network/Intent.h>
-
+#include "Paddle.h"
 #include "Velocity.h"
 
-PlayerControlSystem::PlayerControlSystem(fsn::IEventManager* eventManager, float lockStep) : fsn::System(eventManager, lockStep)
+PlayerControlSystem::PlayerControlSystem(fsn::EntityManager& entityMgr) : fsn::ComponentSystem(entityMgr),
+    mKeyW(false), mKeyS(false), mKeyUp(false), mKeyDown(false)
 {
-    mAspect.all<Velocity, fsn::Intent>();
+    mAspect.all<Paddle, Velocity>();
 }
 
 PlayerControlSystem::~PlayerControlSystem()
@@ -14,23 +14,93 @@ PlayerControlSystem::~PlayerControlSystem()
     //dtor
 }
 
-void PlayerControlSystem::begin(const float dt)
+void PlayerControlSystem::processEntity(const fsn::EntityRef& entity, const float dt)
 {
+    auto vel = entity.getComponent<Velocity>();
+    auto paddle = entity.getComponent<Paddle>();
+
+    if (paddle->deflectDir == 1)
+    {
+        if (mKeyW)
+            vel->y = -300;
+        else if (mKeyS)
+            vel->y = 300;
+        else
+            vel->y = 0;
+    }
+    else if (paddle->deflectDir == -1)
+    {
+        if (mKeyUp)
+            vel->y = -300;
+        else if (mKeyDown)
+            vel->y = 300;
+        else
+            vel->y = 0;
+    }
 }
 
-void PlayerControlSystem::processEntity(fsn::EntityRef* entity, const float dt)
+bool PlayerControlSystem::onKeyPressed(sf::Keyboard::Key key)
 {
-    auto vel = entity->getComponent<Velocity>();
-    auto intent = entity->getComponent<fsn::Intent>();
+    switch (key)
+    {
+        case sf::Keyboard::Key::W:
+        {
+            mKeyW = true;
+            break;
+        }
 
-    if (intent->isIntentActive("up"))
-        vel->mY = -300;
-    else if (intent->isIntentActive("down"))
-        vel->mY = 300;
-    else
-        vel->mY = 0;
+        case sf::Keyboard::Key::S:
+        {
+            mKeyS = true;
+            break;
+        }
+
+        case sf::Keyboard::Key::Up:
+        {
+            mKeyUp = true;
+            break;
+        }
+
+        case sf::Keyboard::Key::Down:
+        {
+            mKeyDown = true;
+            break;
+        }
+
+        default:
+            break;
+    }
 }
 
-void PlayerControlSystem::end(const float dt)
+bool PlayerControlSystem::onKeyReleased(sf::Keyboard::Key key)
 {
+    switch (key)
+    {
+        case sf::Keyboard::Key::W:
+        {
+            mKeyW = false;
+            break;
+        }
+
+        case sf::Keyboard::Key::S:
+        {
+            mKeyS = false;
+            break;
+        }
+
+        case sf::Keyboard::Key::Up:
+        {
+            mKeyUp = false;
+            break;
+        }
+
+        case sf::Keyboard::Key::Down:
+        {
+            mKeyDown = false;
+            break;
+        }
+
+        default:
+            break;
+    }
 }

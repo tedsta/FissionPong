@@ -54,7 +54,10 @@
 			<Add library="extlibs\lib\libenet.a" />
 		</Linker>
 		<Unit filename="include/Ball.h" />
+		<Unit filename="include/BallPaddleSystem.h" />
+		<Unit filename="include/BallWallSystem.h" />
 		<Unit filename="include/Dimensions.h" />
+		<Unit filename="include/EntityTags.h" />
 		<Unit filename="include/MovementSystem.h" />
 		<Unit filename="include/Paddle.h" />
 		<Unit filename="include/PlayerControlSystem.h" />
@@ -62,6 +65,8 @@
 		<Unit filename="include/Velocity.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Ball.cpp" />
+		<Unit filename="src/BallPaddleSystem.cpp" />
+		<Unit filename="src/BallWallSystem.cpp" />
 		<Unit filename="src/Dimensions.cpp" />
 		<Unit filename="src/MovementSystem.cpp" />
 		<Unit filename="src/Paddle.cpp" />

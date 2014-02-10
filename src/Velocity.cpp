@@ -1,6 +1,6 @@
 #include "Velocity.h"
 
-Velocity::Velocity(int x, int y) : mX(x), mY(y)
+Velocity::Velocity(int x, int y) : x(x), y(y)
 {
     //ctor
 }

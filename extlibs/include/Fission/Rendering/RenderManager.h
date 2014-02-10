@@ -9,6 +9,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
+#include "Fission/Core/EntityRef.h"
 #include "Fission/Rendering/DebugDisplay.h"
 
 namespace fsn
@@ -18,6 +19,12 @@ namespace fsn
     class RenderComponent;
     class Transform;
 
+    class RenderOverlay
+    {
+        public:
+            virtual void draw(sf::RenderTarget& target) = 0;
+    };
+
     class RenderManager
     {
         template <typename RenderComponentT> friend class RenderSystem;
@@ -26,7 +33,9 @@ namespace fsn
             RenderManager(int width, int height, const std::string& wndName, int layers, sf::Font* debugFont);
             ~RenderManager();
 
-            void renderLayers();
+            void render();
+
+            void addOverlay(RenderOverlay* overlay){mOverlays.push_back(overlay);}
 
             // Getters
 
@@ -43,11 +52,12 @@ namespace fsn
             struct Renderable
             {
                 int componentID;
+                EntityRef entity;
                 Transform* transform;
                 RenderComponent* render;
             };
 
-            void addRenderableToLayer(int layer, EntityRef* entity, int componentID);
+            void addRenderableToLayer(int layer, const EntityRef& entity, int componentID);
             void removeRenderableFromLayer(int layer, int componentID);
 
             sf::RenderWindow mWindow;
@@ -59,6 +69,7 @@ namespace fsn
 
             std::vector<IRenderSystem*> mRenderSystems;
             std::vector<std::vector<Renderable>> mLayers;
+            std::vector<RenderOverlay*> mOverlays;
     };
 }
 

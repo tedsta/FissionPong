@@ -3,25 +3,30 @@
 
 #include <SFML/Window/Window.hpp>
 
-#include <Fission/Core/System.h>
+#include <Fission/Core/Systems/System.h>
 
 namespace fsn
 {
+    class IKeyboardListener;
+    class IMouseListener;
+
     class InputSystem : public System
     {
         public:
-            InputSystem(IEventManager* eventManager, float lockStep, sf::Window* window);
+            InputSystem(sf::Window* window);
             virtual ~InputSystem();
 
-        protected:
-            void begin(const float dt);
+            void addKeyboardListener(IKeyboardListener* listener){mKeyListeners.push_back(listener);}
+            void addMouseListener(IMouseListener* listener){mMouseListeners.push_back(listener);}
 
-            void processEntity(EntityRef* entity, const float dt);
-
-            void end(const float dt);
+            void update(const float dt);
 
         private:
             sf::Window *mWindow;
+            std::vector<IKeyboardListener*> mKeyListeners;
+            std::vector<IMouseListener*> mMouseListeners;
+
+            sf::Vector2i mMousePosition;
     };
 }
 

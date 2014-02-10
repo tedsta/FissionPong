@@ -1,17 +1,16 @@
 #ifndef MOVEMENTSYSTEM_H
 #define MOVEMENTSYSTEM_H
 
-#include <Fission/Core/System.h>
+#include <Fission/Core/Systems/ComponentSystem.h>
 
-class MovementSystem : public fsn::System
+class MovementSystem : public fsn::ComponentSystem
 {
     public:
-        MovementSystem(fsn::IEventManager* eventManager, float lockStep);
+        MovementSystem(fsn::EntityManager& entityMgr);
         virtual ~MovementSystem();
 
-    protected:
         void begin(const float dt);
-        void processEntity(fsn::EntityRef* entity, const float dt);
+        void processEntity(const fsn::EntityRef& entity, const float dt);
         void end(const float dt);
 
     private:

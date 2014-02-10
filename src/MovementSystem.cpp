@@ -5,7 +5,7 @@
 
 #include "Velocity.h"
 
-MovementSystem::MovementSystem(fsn::IEventManager* eventManager, float lockStep) : fsn::System(eventManager, lockStep)
+MovementSystem::MovementSystem(fsn::EntityManager& entityMgr) : fsn::ComponentSystem(entityMgr)
 {
     mAspect.all<fsn::Transform, Velocity>();
 }
@@ -19,12 +19,12 @@ void MovementSystem::begin(const float dt)
 {
 }
 
-void MovementSystem::processEntity(fsn::EntityRef* entity, const float dt)
+void MovementSystem::processEntity(const fsn::EntityRef& entity, const float dt)
 {
-    auto transform = entity->getComponent<fsn::Transform>();
-    auto vel = entity->getComponent<Velocity>();
+    auto transform = entity.getComponent<fsn::Transform>();
+    auto vel = entity.getComponent<Velocity>();
 
-    transform->move(static_cast<float>(vel->mX)*dt, static_cast<float>(vel->mY)*dt);
+    transform->move(static_cast<float>(vel->x)*dt, static_cast<float>(vel->y)*dt);
 }
 
 void MovementSystem::end(const float dt)

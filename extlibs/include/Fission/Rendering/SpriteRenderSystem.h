@@ -10,10 +10,10 @@ namespace fsn
     class SpriteRenderSystem : public RenderSystem<Sprite>
     {
         public:
-            SpriteRenderSystem(IEventManager* eventManager, RenderManager* renderManager, float lockStep);
+            SpriteRenderSystem(EntityManager& entityMgr, RenderManager* renderManager);
 
         protected:
-            void render(Sprite* sprite, sf::RenderTarget& target, sf::RenderStates& states);
+            void render(const EntityRef& entity, Sprite* sprite, sf::RenderTarget& target, sf::RenderStates& states);
 
         private:
     };

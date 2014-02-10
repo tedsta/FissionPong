@@ -1,6 +1,6 @@
 #include "Dimensions.h"
 
-Dimensions::Dimensions(int x, int y) : mX(x),mY(y)
+Dimensions::Dimensions(int x, int y) : x(x), y(y)
 {
     //ctor
 }

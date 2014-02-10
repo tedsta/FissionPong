@@ -1,6 +1,6 @@
 #include "Paddle.h"
 
-Paddle::Paddle()
+Paddle::Paddle(int deflectDir) : deflectDir(deflectDir)
 {
     //ctor
 }

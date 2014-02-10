@@ -8,8 +8,10 @@ class Paddle : public fsn::Component
     FISSION_COMPONENT
 
     public:
-        Paddle();
+        Paddle(int deflectDir = 1);
         ~Paddle();
+
+        int deflectDir;
 
     private:
 };
