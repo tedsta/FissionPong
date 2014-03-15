@@ -1,6 +1,8 @@
 #ifndef ENTITYREF_H
 #define ENTITYREF_H
 
+#include <cstddef>
+
 #include "Fission/Core/EntityManager.h"
 
 namespace fsn
@@ -10,7 +12,8 @@ namespace fsn
         friend class EntityManager;
 
         public:
-            const static int NullID = -1; // The 0th entity is the NULL entity.
+            static const int NullID = -1; // The 0th entity is the NULL entity.
+            static const std::size_t NullUniqueID = 0;
 
             struct find : std::unary_function<EntityRef, bool>
             {
@@ -31,6 +34,9 @@ namespace fsn
             /// \brief Destroy this entity.
             void destroy() const;
 
+            /// \brief Serialize this entity.
+            void serialize(Packet& packet) const;
+
             /// \brief Set this entity's tag
             void setTag(int tag) const;
 
@@ -45,7 +51,7 @@ namespace fsn
             /// \brief Fast, unsafe way to get a component from this entity.
             /// \return Corresponding component, or nullptr if it doesn't exist.
             template<typename component>
-            component* getComponent() const
+            inline component& getComponent() const
             {
                 return mEntityManager->getComponentFromEntity<component>(mID);
             }
@@ -65,13 +71,16 @@ namespace fsn
             /// Useful for when you can't call the template method. Unsafe, so you have to be
             /// absolutely sure that the entity is valid
             /// \return Corresponding component, or nullptr if it doesn't exist.
-            Component* getComponent(ComponentType componentID) const
+            inline Component& getComponent(ComponentType componentID) const
             {
                 return mEntityManager->getComponentFromEntity(mID, componentID);
             }
 
             /// \brief Get the ID of the entity this points to.
             int getID() const {return mID;}
+
+            /// \brief Get this entity's unique ID
+            std::size_t getUniqueID() const;
 
             /// \brief Get the bits for this entity
             const std::bitset<MaxComponents>& getBits() const;

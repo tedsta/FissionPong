@@ -38,7 +38,7 @@ namespace fsn
             RenderSystem(EntityManager& entityMgr, RenderManager* renderManager) :
                 IRenderSystem(entityMgr), mRenderManager(renderManager)
             {
-                mAspect.all<RenderComponentT>();
+                all<RenderComponentT>();
                 if (mRenderManager->mRenderSystems.size() <= RenderComponentT::Type())
                     mRenderManager->mRenderSystems.resize(RenderComponentT::Type()+1);
                 mRenderManager->mRenderSystems[RenderComponentT::Type()] = this;
@@ -61,14 +61,14 @@ namespace fsn
 
             void onEntityAdded(const EntityRef& entity)
             {
-                auto rndCmp = entity.getComponent<RenderComponentT>();
-                mRenderManager->addRenderableToLayer(rndCmp->getLayer(), entity, RenderComponentT::Type());
+                auto& rndCmp = entity.getComponent<RenderComponentT>();
+                mRenderManager->addRenderableToLayer(rndCmp.getLayer(), entity, RenderComponentT::Type());
             }
 
             void onEntityRemoved(const EntityRef& entity)
             {
-                auto rndCmp = entity.getComponent<RenderComponentT>();
-                mRenderManager->removeRenderableFromLayer(rndCmp->getLayer(), RenderComponentT::Type());
+                auto& rndCmp = entity.getComponent<RenderComponentT>();
+                mRenderManager->removeRenderableFromLayer(rndCmp.getLayer(), RenderComponentT::Type());
             }
 
             // Just call the derived render function

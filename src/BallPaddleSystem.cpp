@@ -12,29 +12,31 @@
 BallPaddleSystem::BallPaddleSystem(fsn::EntityManager& entityMgr) : fsn::ComponentSystem(entityMgr),
     mEntityManager(entityMgr)
 {
-    mAspect.all<fsn::Transform, Dimensions, Velocity, Ball>();
+    all<fsn::Transform, Dimensions, Velocity, Ball>();
 }
 
 void BallPaddleSystem::processEntity(const fsn::EntityRef& entity, const float dt)
 {
-    auto transform = entity.getComponent<fsn::Transform>();
-    auto dim = entity.getComponent<Dimensions>();
-    auto vel = entity.getComponent<Velocity>();
-    auto ball = entity.getComponent<Ball>();
+    auto& transform = entity.getComponent<fsn::Transform>();
+    auto& dim = entity.getComponent<Dimensions>();
+    auto& vel = entity.getComponent<Velocity>();
 
-    auto paddleEntities = mEntityManager.getEntitiesWithTag(PADDLE);
+    sf::Vector2f ballPos = transform.getPosition()-transform.getOrigin();
+
+    auto& paddleEntities = mEntityManager.getEntitiesWithTag(PADDLE);
 
     for (auto& paddleEnt : paddleEntities)
     {
-        auto pTransform = paddleEnt.getComponent<fsn::Transform>();
-        auto pDim = paddleEnt.getComponent<Dimensions>();
-        auto paddle = paddleEnt.getComponent<Paddle>();
+        auto& pTransform = paddleEnt.getComponent<fsn::Transform>();
+        auto& pDim = paddleEnt.getComponent<Dimensions>();
+        auto& paddle = paddleEnt.getComponent<Paddle>();
 
+        sf::Vector2f paddlePos = pTransform.getPosition()-pTransform.getOrigin();
 
-        if (transform->getPosition().x+dim->x > pTransform->getPosition().x && transform->getPosition().x < pTransform->getPosition().x+pDim->x &&
-            transform->getPosition().y+dim->y > pTransform->getPosition().y && transform->getPosition().y < pTransform->getPosition().y+pDim->y)
+        if (ballPos.x+dim.x > paddlePos.x && ballPos.x < paddlePos.x+pDim.x &&
+            ballPos.y+dim.y > paddlePos.y && ballPos.y < paddlePos.y+pDim.y)
         {
-            vel->x = 300*paddle->deflectDir;
+            vel.x = 300*paddle.deflectDir;
         }
     }
 }

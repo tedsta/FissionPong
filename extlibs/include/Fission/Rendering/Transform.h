@@ -18,14 +18,14 @@ namespace fsn
             Transform(sf::Vector2f pos = sf::Vector2f(0, 0), float rot = 0, sf::Vector2f scale = sf::Vector2f(1, 1), const EntityRef& parent = EntityRef());
             virtual ~Transform();
 
-            void serialize(sf::Packet& packet);
-            void deserialize(sf::Packet& packet);
+            void serialize(Packet& packet);
+            void deserialize(Packet& packet);
 
             sf::Transform getGlobalTransform();
 
             const EntityRef& getParent() const {return mParent;}
 
-            void setParent(const EntityRef& parent){mParent=parent;}
+            void setParent(const EntityRef& parent);
 
         private:
             EntityRef mParent;

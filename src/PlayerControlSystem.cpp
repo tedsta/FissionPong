@@ -6,7 +6,7 @@
 PlayerControlSystem::PlayerControlSystem(fsn::EntityManager& entityMgr) : fsn::ComponentSystem(entityMgr),
     mKeyW(false), mKeyS(false), mKeyUp(false), mKeyDown(false)
 {
-    mAspect.all<Paddle, Velocity>();
+    all<Paddle, Velocity>();
 }
 
 PlayerControlSystem::~PlayerControlSystem()
@@ -16,26 +16,26 @@ PlayerControlSystem::~PlayerControlSystem()
 
 void PlayerControlSystem::processEntity(const fsn::EntityRef& entity, const float dt)
 {
-    auto vel = entity.getComponent<Velocity>();
-    auto paddle = entity.getComponent<Paddle>();
+    auto& vel = entity.getComponent<Velocity>();
+    auto& paddle = entity.getComponent<Paddle>();
 
-    if (paddle->deflectDir == 1)
+    if (paddle.deflectDir == 1)
     {
         if (mKeyW)
-            vel->y = -300;
+            vel.y = -300;
         else if (mKeyS)
-            vel->y = 300;
+            vel.y = 300;
         else
-            vel->y = 0;
+            vel.y = 0;
     }
-    else if (paddle->deflectDir == -1)
+    else if (paddle.deflectDir == -1)
     {
         if (mKeyUp)
-            vel->y = -300;
+            vel.y = -300;
         else if (mKeyDown)
-            vel->y = 300;
+            vel.y = 300;
         else
-            vel->y = 0;
+            vel.y = 0;
     }
 }
 
@@ -70,6 +70,8 @@ bool PlayerControlSystem::onKeyPressed(sf::Keyboard::Key key)
         default:
             break;
     }
+
+    return false;
 }
 
 bool PlayerControlSystem::onKeyReleased(sf::Keyboard::Key key)
@@ -103,4 +105,6 @@ bool PlayerControlSystem::onKeyReleased(sf::Keyboard::Key key)
         default:
             break;
     }
+
+    return false;
 }

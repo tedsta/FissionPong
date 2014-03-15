@@ -44,17 +44,17 @@ int main()
 
     // Setup the engine, render manager, and fake connection.
     fsn::Engine engine;
-    auto entityMgr = engine.getEntityManager();
+    auto& entityMgr = engine.getEntityManager();
     fsn::RenderManager renderMgr(800, 600, "Fission Pong Example", 5, NULL);
     fsn::Connection conn(engine.getEventManager());
 
     // Setup our systems - only the input systems for now
-    fsn::SpriteRenderSystem spriteSys(*engine.getEntityManager(), &renderMgr);
+    fsn::SpriteRenderSystem spriteSys(entityMgr, &renderMgr);
     fsn::InputSystem inputSys(&renderMgr.getWindow());
-    PlayerControlSystem playerSys(*engine.getEntityManager());
-    MovementSystem moveSys(*engine.getEntityManager());
-    BallWallSystem ballWallSys(*engine.getEntityManager(), renderMgr.getWindow().getSize().x, renderMgr.getWindow().getSize().y);
-    BallPaddleSystem ballPaddleSys(*engine.getEntityManager());
+    PlayerControlSystem playerSys(entityMgr);
+    MovementSystem moveSys(entityMgr);
+    BallWallSystem ballWallSys(entityMgr, renderMgr.getWindow().getSize().x, renderMgr.getWindow().getSize().y);
+    BallPaddleSystem ballPaddleSys(entityMgr);
 
     engine.addSystem(spriteSys);
     engine.addSystem(inputSys);
@@ -65,23 +65,23 @@ int main()
 
     inputSys.addKeyboardListener(&playerSys);
 
-    auto paddle1 = entityMgr->createEntityRef(entityMgr->createEntity());
+    auto paddle1 = entityMgr.createEntityRef(entityMgr.createEntity());
     paddle1.addComponent<fsn::Transform>(sf::Vector2f(5, 5));
-    paddle1.addComponent<Dimensions>(16, 64);
+    paddle1.addComponent<Dimensions>(16, 96);
     paddle1.addComponent<Velocity>();
     paddle1.addComponent<fsn::Sprite>("paddle.png");
     paddle1.addComponent<Paddle>(1);
     paddle1.setTag(PADDLE);
 
-    auto paddle2 = entityMgr->createEntityRef(entityMgr->createEntity());
+    auto paddle2 = entityMgr.createEntityRef(entityMgr.createEntity());
     paddle2.addComponent<fsn::Transform>(sf::Vector2f(renderMgr.getWindow().getSize().x-16-5, 5));
-    paddle2.addComponent<Dimensions>(16, 64);
+    paddle2.addComponent<Dimensions>(16, 96);
     paddle2.addComponent<Velocity>();
     paddle2.addComponent<fsn::Sprite>("paddle.png");
     paddle2.addComponent<Paddle>(-1);
     paddle2.setTag(PADDLE);
 
-    auto ball = entityMgr->createEntityRef(entityMgr->createEntity());
+    auto ball = entityMgr.createEntityRef(entityMgr.createEntity());
     ball.addComponent<fsn::Transform>(sf::Vector2f(renderMgr.getWindow().getSize().x/2 - 8, renderMgr.getWindow().getSize().y/2 - 8));
     ball.addComponent<Dimensions>(16, 16);
     ball.addComponent<Velocity>(-300, 300);
@@ -96,7 +96,7 @@ int main()
         float dt = clock.getElapsedTime().asSeconds();
         clock.restart();
 
-        conn.update(dt);
+        conn.update();
         engine.update(dt);
         renderMgr.render();
     }

@@ -1,75 +1,68 @@
-#ifndef __EVENT_MANAGER_H__
-#define __EVENT_MANAGER_H__
+#ifndef FISSION_EVENT_MANAGER_H
+#define FISSION_EVENT_MANAGER_H
 
-#include <map>
-#include <list>
-#include <string>
+#include <unordered_map>
+#include <typeinfo>
+#include <typeindex>
+#include <functional>
+#include <vector>
 
-#include <SFML/System/Mutex.hpp>
-
-#include <Fission/Core/Event.h>
+#include "Fission/Util/make_unique.h"
 
 namespace fsn
 {
-    class IEventManager
+    /// \brief A tag class for event data structs to inherit from.
+    struct EventData
     {
-        public:
-            /// \brief Add a listener for a given event type.
-            virtual void addListener(IEventListener* listener, const std::string& ID) = 0;
-
-            /// \brief Remove a listener for a given event type.
-            virtual void removeListener(IEventListener* listener, const std::string& ID) = 0;
-
-            /// \brief Add a global listener. This type of listener receives all types of events.
-            /// \note A listener that is registered as global as well as for event types will receive
-            /// duplicate events.
-            virtual void addGlobalListener(IEventListener* listener) = 0;
-
-            /// \brief Remove a global listener.
-            virtual void removeGlobalListener(IEventListener* listener) = 0;
-
-            /// \brief Remove all listeners for all event types.
-            virtual void removeAllListeners() = 0;
-
-            /// \brief Dispatch an event.
-            virtual bool fireEvent(const std::string& ID, const IEventData& evt) = 0;
     };
 
-    class EventManager : public IEventManager
+    class EventManager
     {
         public:
             EventManager();
 
-            /// \brief Add a listener for a given event type.
-            void addListener(IEventListener *listener, const std::string& ID);
+            template <typename Evt_T, typename T>
+            void addListener(void (T::*meth_ptr)(const Evt_T&), T& listener)
+            {
+                auto type = std::type_index(typeid(Evt_T));
 
-            /// \brief Remove a listener for a given event type.
-            void removeListener(IEventListener *listener, const std::string& ID);
+                if (mListeners.find(type) == mListeners.end())
+                    mListeners[type] = std::vector<std::unique_ptr<ICallbackWrapper>>();
 
-            /// \brief Add a global listener. This type of listener receives all types of events.
-            /// \note A listener that is registered as global as well as for event types will receive
-            /// duplicate events.
-            void addGlobalListener(IEventListener *listener);
+                mListeners[type].push_back(make_unique<CallbackWrapper<Evt_T>>(std::bind(meth_ptr, &listener, std::placeholders::_1)));
+            }
 
-            /// \brief Remove a global listener.
-            void removeGlobalListener(IEventListener *listener);
-
-            /// \brief Remove all listeners for all event types.
-            void removeAllListeners();
-
-            /// \brief Dispatch an event.
-            bool fireEvent(const std::string& ID, const IEventData& evt);
+            template <typename Evt_T>
+            void fireEvent(const Evt_T& event)
+            {
+                for (auto& callback : mListeners[std::type_index(typeid(Evt_T))])
+                    callback->call(event);
+            }
 
         private:
-            typedef std::list<IEventListener*> EventListenerList;
-            typedef std::map<std::string, EventListenerList> EventListenerMap;
-            typedef std::pair<std::string, EventListenerList> EventListenerMapPair;
+            class ICallbackWrapper
+            {
+                public:
+                    virtual ~ICallbackWrapper() {}
 
-            // A map of all the listeners connected to specific events.
-            EventListenerMap mListeners;
+                    virtual void call(const EventData& event) = 0;
+            };
 
-            // A list of global event listeners. These listeners receive all events regardless of type.
-            EventListenerList mGlobals;
+            template <typename Evt_T>
+            class CallbackWrapper : public ICallbackWrapper
+            {
+                public:
+                    CallbackWrapper(const std::function<void(const Evt_T&)>& func) : func(func) {}
+
+                    void call(const EventData& event)
+                    {
+                        func(static_cast<const Evt_T&>(event));
+                    }
+
+                    std::function<void(const Evt_T&)> func;
+            };
+
+            std::unordered_map<std::type_index, std::vector<std::unique_ptr<ICallbackWrapper>>> mListeners;
     };
 }
 

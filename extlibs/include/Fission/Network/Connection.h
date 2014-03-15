@@ -3,7 +3,7 @@
 
 #include <enet/enet.h>
 
-#include <SFML/Network/Packet.hpp>
+#include "Fission/Core/Packet.h"
 
 namespace fsn
 {
@@ -17,18 +17,6 @@ namespace fsn
         };
     };
 
-    namespace PacketType
-    {
-        enum
-        {
-            BEGIN_SCENE_SEND,
-            SCENE_SEND_PROGRESS,
-            END_SCENE_SEND,
-            CREATE_OBJECT,
-            USER_MESSAGE
-        };
-    };
-
     struct Peer
     {
         int mID;
@@ -38,27 +26,27 @@ namespace fsn
 
     class Entity;
     class Component;
-    class IEventManager;
+    class EventManager;
     class Scene;
 
     class IPacketHandler
     {
         friend class Connection;
 
-    public:
-        virtual void handlePacket(sf::Packet& packet, int netID) = 0;
+        public:
+            virtual void handlePacket(Packet& packet, int netID) = 0;
 
-        /// \brief Get the packet handler ID
-        int getHndID() const {return mHndID;}
+            /// \brief Get the packet handler ID
+            int getHndID() const {return mHndID;}
 
-    private:
-        int mHndID;
+        private:
+            int mHndID;
     };
 
     class Connection
     {
         public:
-            Connection(IEventManager* eventManager);
+            Connection(EventManager& eventManager);
             virtual ~Connection();
 
             /// \brief Begins hosting a server.
@@ -80,7 +68,7 @@ namespace fsn
             void disconnect(int netID = 0);
 
             /// \brief Update the networking manager.
-            void update(const float dt);
+            void update();
 
             /// \brief Send a packet over the network.
             /// \param packet The packet to send.
@@ -89,13 +77,13 @@ namespace fsn
             /// \param excludeID If it's a server and the packet is sent to all clients, the ID of the
             /// peer to exclude when sending. Set to 0 to exclude no one.
             /// \param reliable Whether or not to send the packet reliably.
-            void send(sf::Packet& packet, int hndID, int netID = 0, int excludeID = 0, bool reliable = true);
+            void send(Packet& packet, int hndID, int netID = 0, int excludeID = 0, bool reliable = true);
 
             /// \brief Find the ID of a peer with the specified IP address.
             int findPeerID(std::string IP);
 
             /// \brief Find a peer by ID.
-            Peer *findPeer(int netID);
+            Peer* findPeer(int netID);
 
             /// \brief Remove a peer
             void removePeer(int netID);
@@ -107,31 +95,33 @@ namespace fsn
             void registerHandler(int hndID, IPacketHandler* handler);
 
             /// \brief Get the network role - server or client.
-            int getType(){return mNetType;}
+            int getType() const {return mNetType;}
 
             /// \brief If this is a client, get the network ID.
-            int getNetID(){if (mPeer){return mPeer->mID;} return 0;}
+            int getNetID() const {if (mPeer){return mPeer->mID;} return 0;}
 
         private:
-            // Some dependencies
-            IEventManager*mEventManager;
+            void sendRaw(Packet& packet, int netID = 0, int excludeID = 0, bool reliable = true);
 
-            /// Server or client?
+            // Some dependencies
+            EventManager& mEventManager;
+
+            // Server or client?
             int mNetType;
 
-            /// The network host
+            // The network host
             ENetHost *mHost;
 
-            /// If it's a client, the peer
+            // If it's a client, the peer
             Peer *mPeer;
 
-            /// The list of clients if I'm a server
+            // The list of clients if I'm a server
             std::vector <Peer*> mPeers;
 
-            /// The ID for the next peer
+            // The ID for the next peer
             int mNextID;
 
-            /// The packet handlers
+            // The packet handlers
             std::vector<IPacketHandler*> mHandlers;
     };
 }
